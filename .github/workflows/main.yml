@@ -1,16 +1,18 @@
-name: Deploy to Testing
+name: Deploy to Azure Testing Environment
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Build and Push Docker Image"]
+    types:
+      - completed
 
 permissions:
   contents: write  # Required for gh CLI to trigger workflows
   actions: write   # Recommended if triggering other workflows
 
 jobs:
-  trigger-testing:
+  trigger-testing-azure-deployment:
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
 
     steps:
