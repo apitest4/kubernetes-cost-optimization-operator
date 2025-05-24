@@ -20,14 +20,14 @@ jobs:
       - name: Extract version from build.gradle
         id: get_version
         run: |
-          VERSION=$(grep '^version\s*=' build.gradle | sed 's/version\s*=\s*["'\'']\([^"'\'']*\)["'\'']/\1/')
+          VERSION=$(grep '^version\s*=' app/build.gradle | sed 's/version\s*=\s*["'\'']\([^"'\'']*\)["'\'']/\1/')
           echo "Detected version: $VERSION"
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Trigger Testing Deployment
         run: |
           gh workflow run deploy-to-azure-vm.yml \
-            --ref "${{ github.sha }}" \
+            --ref "main" \
             -f environment=Testing \
             -f imageTag=${{ steps.get_version.outputs.image_tag }}
         env:
